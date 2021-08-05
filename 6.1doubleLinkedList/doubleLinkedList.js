@@ -2,6 +2,7 @@ import { Node } from "../models/linked-list-model.js";
 import LinkedList from "../6linkedList/linkedList.js";
 import { defaultEquals } from "../util.js";
 
+//双向链表
 class DoubleNode extends Node {
     constructor(ele, next, prev) {
         super(ele, next);

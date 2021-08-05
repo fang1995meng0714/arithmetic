@@ -1,6 +1,8 @@
 import { defaultEquals } from "../util.js";
 import { Node } from "../models/linked-list-model.js";
 
+
+//链表
 export default class LinkedList {
     constructor(equalsFn = defaultEquals) {
         this.count = 0;
