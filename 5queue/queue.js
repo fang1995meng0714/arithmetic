@@ -6,7 +6,7 @@ export default class Queue {
     }
 
     size() { 
-        return this.count - this.lowestCount === 0; 
+        return this.count - this.lowestCount; 
     }
 
     isEmpty() { 
@@ -55,35 +55,35 @@ export default class Queue {
     }
 }
 
-const queue = new Queue();
-queue.enqueue("John");
-queue.enqueue("jack");
-queue.enqueue("Camila");
+// const queue = new Queue();
+// queue.enqueue("John");
+// queue.enqueue("jack");
+// queue.enqueue("Camila");
 
-queue.dequeue();
-console.log(queue.toString());
+// queue.dequeue();
+// console.log(queue.toString());
 
-function hotPotato(eleList, num) {
-    const queue = new Queue();
-    const elimitateList = [];
+// function hotPotato(eleList, num) {
+//     const queue = new Queue();
+//     const elimitateList = [];
 
-    for (let index = 0; index < eleList.length; index++) {
-        queue.enqueue(eleList[index])
-    }
+//     for (let index = 0; index < eleList.length; index++) {
+//         queue.enqueue(eleList[index])
+//     }
 
-    while(queue.size() > 1) {
-        for (let i = 0; i < num; i++) {
-            queue.enqueue(queue.dequeue());
-        }
-        elimitateList.push(queue.dequeue)
-    }
+//     while(queue.size() > 1) {
+//         for (let i = 0; i < num; i++) {
+//             queue.enqueue(queue.dequeue());
+//         }
+//         elimitateList.push(queue.dequeue)
+//     }
 
-    return {
-        eliminated: elimitateList,
-        winner: queue.dequeue()
-    }
-}
+//     return {
+//         eliminated: elimitateList,
+//         winner: queue.dequeue()
+//     }
+// }
 
-const names = ['John', 'Jack', 'Camila', 'Ingrid', 'Carl']; 
-const result = hotPotato(names, 7);
-console.log(result.winner)
+// const names = ['John', 'Jack', 'Camila', 'Ingrid', 'Carl']; 
+// const result = hotPotato(names, 7);
+// console.log(result.winner)
