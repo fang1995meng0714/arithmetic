@@ -78,7 +78,7 @@ graph.addEdge('D', 'H');
 graph.addEdge('B', 'E'); 
 graph.addEdge('B', 'F'); 
 graph.addEdge('E', 'I');
-console.log(graph);
+// console.log(graph);
 
 
 export const breadthFirstSearch = (graph, startVertex, callback) => {
@@ -87,6 +87,7 @@ export const breadthFirstSearch = (graph, startVertex, callback) => {
     const color = initializeColor(vertices);
     const queue = new Queue();
     queue.enqueue(startVertex);
+
     while(!queue.isEmpty()) {
         const u = queue.dequeue();
         const neighbors = adjList.get(u);
