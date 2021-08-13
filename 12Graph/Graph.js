@@ -1,5 +1,6 @@
 import Dictionary from "../8map/map.js";
 import Queue from "../5queue/queue.js";
+import Stack from "../4stack/stack.js";
 
 
 const Colors = {
@@ -80,7 +81,7 @@ graph.addEdge('B', 'F');
 graph.addEdge('E', 'I');
 // console.log(graph);
 
-
+// 广度优先算法
 export const breadthFirstSearch = (graph, startVertex, callback) => {
     const vertices = graph.getVertices();
     const adjList = graph.getAdjList();
@@ -100,11 +101,151 @@ export const breadthFirstSearch = (graph, startVertex, callback) => {
             }
         }
         color[u] = Colors.BLACK;
-        if(callback) {
-            callback(u);
-        }
+        // if(callback) {
+        //     callback(u);
+        // }
     }
 }
 
 const printVertex = (value) => console.log('Visited vertex: ' + value); // {15} 
+// 调用
 breadthFirstSearch(graph, myVertices[0], printVertex);
+
+
+// 优化版广度优先
+const BFS = (graph, startVertex) => {
+    const vertices = graph.getVertices();
+    const adjList = graph.getAdjList();
+    const color = initializeColor(vertices);
+    const queue = new Queue();
+    const distances = {};
+    const predecessors = {};
+    queue.enqueue(startVertex);
+
+    for(let i = 0; i < vertices.length; i++) {
+        distances[vertices[i]] = 0;
+        predecessors[vertices[i]] = null;
+    }
+
+    while(!queue.isEmpty()) {
+        const u = queue.dequeue();
+        const neighbors = adjList.get(u);
+
+        for (let i = 0; i < neighbors.length; i++) {
+            const w = neighbors[i];
+            if(color[w] === Colors.WHITE) {
+                color[w] = Colors.GREY;
+                distances[w] = distances[u] + 1;
+                predecessors[w] = u;
+                queue.enqueue(w);
+            }
+        }
+
+        color[u] = Colors.BLACK;
+    }
+
+    return {
+        distances, predecessors
+    }
+}
+
+const shortestPathA = BFS(graph, myVertices[0]);
+// console.log(shortestPathA);
+
+const fromVertex = myVertices[0];
+//实例展示
+for(let i = 1; i < myVertices.length; i++) {
+    const toVertex = myVertices[i];
+    const path = new Stack();
+    for(let v = toVertex; v !== fromVertex; v = shortestPathA.predecessors[v]) {
+        // console.log(v)
+        path.push(v);
+    }
+
+    path.push(fromVertex);
+    let s = path.pop();
+    while(!path.isEmpty()) {
+        s += "-" + path.pop();
+    }
+
+    // console.log(s);
+}
+
+// 深度优先
+const depthFirstSearch = (graph, callback) => {
+    const vertices = graph.getVertices();
+    const adjList = graph.getAdjList();
+    const color = initializeColor(vertices);
+
+    for(let i = 0; i< vertices.length; i++) {
+        if(color[vertices[i]] === Colors.WHITE) {
+            depthFirstSearchVisit(vertices[i], color, adjList, callback);
+        }
+    }
+}
+
+const depthFirstSearchVisit = (u, color, adjList, callback) => {
+    color[u] = Colors.GREY;
+    // if(callback) {
+    //     callback(u)
+    // }
+
+    const neighbors = adjList.get(u);
+    for(let i = 0; i < neighbors.length; i++) {
+        const w = neighbors[i];
+        if(color[w] === Colors.WHITE) {
+            depthFirstSearchVisit(w, color, adjList, callback);
+        }
+    }
+    color[u] = Colors.BLACK;
+}
+
+depthFirstSearch(graph, printVertex);
+
+
+//优化版深度优先
+export const DFS = graph => {
+    const vertices = graph.getVertices();
+    const adjList = graph.getAdjList();
+    const color = initializeColor(vertices);
+    const d = {};
+    const f = {};
+    const p = {};
+    const time = {count: 0};
+
+    for(let i = 0; i < vertices.length; i++) {
+        f[vertices[i]] = 0;
+        d[vertices[i]] = 0;
+        p[vertices[i]] = null;
+    }
+
+    for(let i = 0; i < vertices.length; i++) {
+        if(color[vertices[i]] === Colors.WHITE) {
+            DFSVisit(vertices[i], color, d, f, p , time, adjList);
+        }
+    }
+
+    return {
+        discovery: d,
+        finished: f,
+        predecessors: p
+    }
+}
+
+const DFSVisit = (u, color, d, f, p, time, adjList) => {
+    color[u] = Colors.GREY;
+    d[u] = ++time.count;
+    const neighbors = adjList.get(u);
+    for(let i = 0; i < neighbors.length; i++) {
+        const w = neighbors[i];
+        if(color[w] === Colors.WHITE){
+            p[w] = u;
+            DFSVisit(w, color, d, f, p, time, adjList);
+        }
+    }
+    color[u] = Colors.BLACK;
+    f[u] = ++time.count;
+}
+
+const shortestPathB = DFS(graph);
+// console.log(shortestPathB)

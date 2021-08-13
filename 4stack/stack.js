@@ -1,4 +1,4 @@
-class Stack{
+export default class Stack{
     constructor() {
         this.item = {};
         this.count = 0;
