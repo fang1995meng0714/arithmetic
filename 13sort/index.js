@@ -80,5 +80,70 @@ function insertionSort(array, compareFn = defaultCompare) {
     }
     return array;
 }
-array = insertionSort([3, 5, 1, 4, 2]);
+// array = insertionSort([3, 5, 1, 4, 2]);
+// console.log(array);
+
+function mergeSort(array, compareFn = defaultCompare) {
+    if(array.length > 1) {
+        const {length} = array;
+        const middle = Math.floor(length / 2);
+        const left = mergeSort(array.slice(0, middle), compareFn);
+        const right = mergeSort(array.slice(middle, length), compareFn);
+        array = merge(left, right, compareFn);
+    }
+
+    return array;
+}
+
+function merge(left, right, compareFn) {
+    let i = 0;
+    let j = 0;
+    const result = [];
+    while(i < left.length && j < right.length) {
+        result.push(
+            compareFn(left[i], right[j]) === Compare.LESS_THAN ? left[i++] : right[j++]
+        )
+    }
+
+    return result.concat(i < left.length ? left.slice(i) : right.slice(j));
+}
+array = mergeSort([3, 5, 1, 4, 2]);
 console.log(array);
+
+
+//简化版并归
+const sort = (arr) => {
+    let k = arr.length;
+    if(k === 1) return arr;
+    if(k === 2) return arr[0] > arr[1] ?[arr[1],arr[0] ]:[arr[1],arr[0]];
+
+    let left = arr.slice(0, Math.floor(k / 2));
+    let right = arr.slice(Math.floor(k / 2));
+    return merge(sort(left), sort(right));
+}
+
+const inplaceMerge = (a, b) => {
+    let c = [];
+    let i = 0;
+    let k = 0;
+
+    while(i < a.length || k < b.length) {
+        if(i >= a.length) {
+            c.push(b[k]);
+            k+=1;
+        } else if(k >= b.length) {
+            c.push(a[i]);
+            i+=1;
+        } else {
+            if(a[i] <= b[k]) {
+                c.push(a[i]);
+                i+=1;
+            } else {
+                c.push(b[k])
+                k+=1;
+            }
+        }
+    }
+
+    return c;
+}
