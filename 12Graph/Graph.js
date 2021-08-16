@@ -17,7 +17,7 @@ const initializeColor = vertices => {
     return color;
 }
 
-class Graph {
+export class Graph {
     constructor(isDirected = false) {
         this.idDirected = isDirected;
         this.vertices = [];
@@ -64,8 +64,8 @@ class Graph {
       }
 }
 
-const graph = new Graph(); 
-const myVertices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']; // {12}
+let graph = new Graph(); 
+let myVertices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']; // {12}
 for (let i = 0; i < myVertices.length; i++) { // {13} 
     graph.addVertex(myVertices[i]); 
 } 
@@ -249,3 +249,32 @@ const DFSVisit = (u, color, d, f, p, time, adjList) => {
 
 const shortestPathB = DFS(graph);
 // console.log(shortestPathB)
+
+
+graph = new Graph(true); // 有向图
+myVertices = ['A', 'B', 'C', 'D', 'E', 'F']; 
+for (let i = 0; i < myVertices.length; i++) { 
+    graph.addVertex(myVertices[i]); 
+} 
+graph.addEdge('A', 'C'); 
+graph.addEdge('A', 'D'); 
+graph.addEdge('B', 'D'); 
+graph.addEdge('B', 'E'); 
+graph.addEdge('C', 'F'); 
+graph.addEdge('F', 'E'); 
+const result = DFS(graph);
+const fTimes = result.finished;
+let s = "";
+for(let count = 0; count < myVertices.length; count++) {
+    let max = 0;
+    let maxName = null;
+    for(let i = 0;i < myVertices.length; i++) {
+        if(fTimes[myVertices[i]] > max) {
+            max = fTimes[myVertices[i]];
+            maxName = myVertices[i];
+        }
+    }
+    s += "-" + maxName;
+    delete fTimes[maxName];
+}
+console.log(s)
