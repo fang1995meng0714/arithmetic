@@ -1,4 +1,4 @@
-import { Compare, defaultCompare,swap} from '../util.js';
+import { Compare, defaultCompare,swap, defaultEquals} from '../util.js';
 
 // 冒泡
 function bubbleSort(array, compareFn = defaultCompare){
@@ -107,8 +107,8 @@ function merge(left, right, compareFn) {
 
     return result.concat(i < left.length ? left.slice(i) : right.slice(j));
 }
-array = mergeSort([3, 5, 1, 4, 2]);
-console.log(array);
+// array = mergeSort([3, 5, 1, 4, 2]);
+// console.log(array);
 
 
 //简化版并归
@@ -147,3 +147,209 @@ const inplaceMerge = (a, b) => {
 
     return c;
 }
+
+//简单版快排
+function simpleQuickSort(arr) {
+    if(arr.length < 2) return arr;
+    let left = [];
+    let right = [];
+    let pivot = Math.floor(arr.length / 2);
+    let temp = arr.splice(pivot, 1)[0];
+    
+    for(let i = 0; i < arr.length; i++) {
+        if(arr[i] <= temp) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+
+    return [...simpleQuickSort(left), temp, ...simpleQuickSort(right)];
+}
+
+
+//快速排序
+function quickSort(array, compareFn = defaultCompare) {
+    return quick(array, 0, array.length - 1, compareFn);
+}
+function quick(array, left, right, compareFn) {
+    let index;
+    if(array.length > 1) {
+        index = partition(array, left, right, compareFn);
+        if(left < index - 1) {
+            quick(array, left, index - 1, compareFn);
+        }
+        if(index < right) {
+            quick(array, index, right, compareFn);
+        }
+    }
+    return array;
+}
+
+function partition(array, left, right, compareFn) {
+    const pivot = array[Math.floor((right + left) / 2)];
+    let i = left;
+    let j = right;
+    while(i <= j) {
+        while(compareFn(array[i], pivot) === Compare.LESS_THAN) {
+            i++;
+        }
+        while(compareFn(array[j], pivot) === Compare.BIGGER_THAN) {
+            j--;
+        }
+        if(i <= j) {
+            swap(array, i, j);
+            i++;
+            j--;
+        }
+    }
+    return i;
+}
+
+// array = simpleQuickSort([3, 5, 3, 1, 4, 2, 4, 3, 2,3]);
+// console.log(array);
+
+
+// 计数排序
+function countingSort(arr) {
+    if(arr.length < 2) {
+        return array;
+    }
+    const maxValue = findMaxValue(arr);
+    const counts = new Array(maxValue + 1);
+
+    arr.forEach(ele => {
+        if(!counts[ele]) {
+            counts[ele] = 0;
+        }
+        counts[ele]++;
+    })
+    let sortedIndex = 0;
+    console.log(counts);
+    counts.forEach((count, i) => {
+        while(count > 0) {
+            arr[sortedIndex++] = i;
+            count--;
+        }
+    })
+    return arr;
+}
+function findMaxValue(arr) {
+    let max = arr[0];
+    for(let i = 1; i < arr.length; i++) {
+        if(arr[i] > max) {
+            max = arr[i];
+        }
+    }
+
+    return max;
+}
+// array = countingSort( [3, 5, 1,3, 4, 2, 10]);
+// console.log(array);
+
+
+//桶排序
+function bucketSort(arr, bucketSize = 5) {
+    if(arr.length < 2) {
+        return arr;
+    }
+    const buckets = createBuckets(arr, bucketSize);
+    return sortBuckets(buckets);
+}
+//创建桶
+function createBuckets(arr, bucketSize) {
+    let minValue = arr[0];
+    let maxValue = arr[0];
+    for(let i = 1; i < arr.length; i++) {
+        if(arr[i] < minValue) {
+            minValue = arr[i];
+        } else if(arr[i] > maxValue) {
+            maxValue = arr[i];
+        }
+    }
+    const bucketCount = Math.floor((maxValue - minValue) / bucketSize) + 1;
+    const buckets = [];
+    for(let i = 0; i < bucketCount; i++) {
+        buckets[i] = [];
+    }
+    for(let i = 0;i < arr.length; i++) {
+        const bucketIndex = Math.floor((arr[i] - minValue) / bucketSize);
+        buckets[bucketIndex].push(arr[i]);
+    }
+    return buckets;
+}
+function sortBuckets(buckets) {
+    const sortedArray = [];
+    for(let i = 0; i < buckets.length; i++) {
+        if(buckets[i] != null) {
+            insertionSort(buckets[i]);
+            sortedArray.push(...buckets[i]);
+        }
+    }
+
+    return sortedArray;
+}
+
+// array = bucketSort( [3, 5, 1,3, 4, 2, 10]);
+// console.log(array);
+
+
+//基数
+// function radixSort(arr, radixBase = 10) {
+//     if(arr.length < 2) {
+//         return arr;
+//     }
+//     const minValue = findMinValue(arr);
+//     const maxValue = findMaxValue(arr);
+//     let significantDigit = 1;
+//     while((maxValue - minValue) / significantDigit >= 1) {
+//         arr = countingSortForRadix(arr, radixBase, significantDigit, minValue);;
+//         significantDigit *= radixBase;
+//     }
+
+//     return array;
+// }
+
+// function countingSortForRadix(array, radixBase, significantDigit, minValue) { 
+//     let bucketsIndex; 
+//     const buckets = []; 
+//     const aux = []; 
+//     for (let i = 0; i < radixBase; i++) { // {5} 
+//     buckets[i] = 0; 
+//     } 
+//     for (let i = 0; i < array.length; i++) { // {6} 
+//     bucketsIndex = Math.floor(((array[i] - minValue) / significantDigit) % 
+//    radixBase); // {7} 
+//     buckets[bucketsIndex]++; // {8} 
+//     } 
+//     for (let i = 1; i < radixBase; i++) { // {9} 
+//     buckets[i] += buckets[i - 1]; 
+//     } 
+//     for (let i = array.length - 1; i >= 0; i--) { // {10} 
+//     bucketsIndex = Math.floor(((array[i] - minValue) / significantDigit) % 
+//    radixBase); // {11} 
+//     aux[--buckets[bucketsIndex]] = array[i]; // {12} 
+//     } 
+//     for (let i = 0; i < array.length; i++) { // {13} 
+//     array[i] = aux[i]; 
+//     } 
+//     return array; 
+// }
+
+// array = radixSort( [3, 5, 1,3, 4, 2, 10]);
+// console.log(array);
+
+
+// 顺序搜索
+const DOES_NOT_EXIST = -1;
+
+function sequentialSearch(arr, value, equalsFn = defaultEquals) {
+    for(let i = 0; i < arr.length; i++) {
+        if(equalsFn(value, arr[i])){
+            return i;
+        }
+    }
+
+    return DOES_NOT_EXIST;
+}
+console.log(sequentialSearch([5, 4, 3, 2, 1], 3));
