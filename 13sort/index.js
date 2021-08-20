@@ -1,4 +1,4 @@
-import { Compare, defaultCompare,swap, defaultEquals} from '../util.js';
+import { Compare, defaultCompare,swap, defaultEquals, DOES_NOT_EXIST} from '../util.js';
 
 // 冒泡
 function bubbleSort(array, compareFn = defaultCompare){
@@ -169,7 +169,7 @@ function simpleQuickSort(arr) {
 
 
 //快速排序
-function quickSort(array, compareFn = defaultCompare) {
+export function quickSort(array, compareFn = defaultCompare) {
     return quick(array, 0, array.length - 1, compareFn);
 }
 function quick(array, left, right, compareFn) {
@@ -341,7 +341,7 @@ function sortBuckets(buckets) {
 
 
 // 顺序搜索
-const DOES_NOT_EXIST = -1;
+
 
 function sequentialSearch(arr, value, equalsFn = defaultEquals) {
     for(let i = 0; i < arr.length; i++) {
@@ -395,4 +395,15 @@ function simpleBinarySearch(arr, key) {
     return -1;
 }
 
-console.log(simpleBinarySearch([5, 4, 3, 2, 1], 3));
+// console.log(simpleBinarySearch([5, 4, 3, 2, 1], 3));
+
+
+// Fisher-Yates随机
+function shuffle(arr) {
+    for(let i = arr.length - 1; i > 0; i--) {
+        const randomIndex = Math.floor(Math.random() * (i + 1));
+        swap(arr, i, randomIndex);
+    }
+    return arr;
+}
+// console.log(shuffle([3,4,2,1,6]));
